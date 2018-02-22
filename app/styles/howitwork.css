@@ -1,0 +1,8 @@
+#howitwork > div.row {
+  height: 100px;
+}
+
+#howitwork > div.row > div.span6 {
+  width: 340px;
+  text-align: center;
+}

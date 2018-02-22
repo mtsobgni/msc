@@ -1,0 +1,30 @@
+/* Use a Flexbox to make the Palette/Diagram responsive */
+#myFlexDiv {
+  display: -webkit-flex;
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  justify-content: center;
+}
+@media (min-width: 768px) {
+  #myGuests {
+    width: 100px;
+    height: 500px;
+    margin-right: 10px;
+  }
+  #myDiagramDiv {
+    height: 500px;
+    flex: 1;
+  }
+}
+@media (max-width: 767px) {
+  #myGuests {
+    width: 90%;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  #myDiagramDiv {
+    width: 90%;
+    height: 500px;
+  }
+}

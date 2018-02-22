@@ -1,0 +1,15 @@
+#contactus > div.row {
+	height: 400px;
+}
+
+#contactus > div.row > div.span6 {
+	width: 45%;
+	text-align: left;
+}
+
+#CU-leftSide {
+	height: 100%;
+	border-right-style: solid;
+	border-right-width: 1px;
+	border-right-color: blue;
+}

@@ -1,0 +1,146 @@
+<div>
+  <div class="tab-content">
+    <div id="homeBar" class="row">
+      <div class="col-md-4">
+        <span ng-click="">SeatingChart</span>
+        <button class="btn btn-large btn-primary" type="submit" ng-click="">back</button>
+        <button class="btn btn-large btn-primary" type="submit" ng-click="">next</button>
+        <button class="btn btn-large btn-primary" type="submit" ng-click="">save</button>
+      </div>
+      <div class="col-md-2" style="margin-top: 7px;">
+        <span>Event Name</span>
+      </div>
+      <div class="btn-group col-md-3">
+        <label class="btn btn-primary" id="DMBack" ng-class="{'active':!isFullScreen}">
+          <input type="radio" name="options" autocomplete="off" value="DMBack" ng-model="displayMode" ng-checked="!isFullScreen">Backend
+        </label>
+        <label class="btn btn-primary" id="DMFront" ng-class="{'active':isFullScreen}">
+          <input type="radio" name="options" autocomplete="off" value="DMFront" ng-model="displayMode" ng-click="goFullScreen()" ng-checked="isFullScreen">Frontend
+        </label>
+      </div>
+      <div class="col-md-3">
+        <button class="btn btn-large btn-primary" type="submit" ng-click="">Print</button>
+        <button class="btn btn-large btn-primary" type="submit">Import</button>
+        <button class="btn btn-large btn-primary active" type="button">Lily</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Ajouter une table
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+      <!-- <li><a tabindex="-1" href="#">HTML</a></li>
+      <li><a tabindex="-1" href="#">CSS</a></li> -->
+      <li class="dropdown-submenu">
+        <a class="test" tabindex="-1" href="#">Ronde<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a tabindex="-1" href="#" ng-click="addTable()">4</a></li>
+          <li><a tabindex="-1" ng-click="addTable()">5</a></li>
+          <li><a tabindex="-1" ng-click="addTable()">6</a></li>
+          <!-- <li class="dropdown-submenu">
+            <a class="test" href="#">Another dropdown <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">3rd level dropdown</a></li>
+              <li><a href="#">3rd level dropdown</a></li>
+            </ul>
+          </li> -->
+        </ul>
+      </li>
+    </ul>
+  </div>
+  <button ng-click="triggerPosition()">Déclencher la position</button><br/>
+
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist" id="myTabs">
+    <li role="presentation"><a href="#guests">Invités</a></li>
+    <li role="presentation" class="active"><a href="#map">Orga Salle</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane" id="guests">
+      <div class="row" style="padding-top: 10px; padding-bottom: 10px; margin-right: 0px; margin-left: 0px; background-color: pink;">
+        <div class="col-md-8">Attendee Manager {{guests.length}}</div>
+        <div class="col-md-4">Import - Export - More / <input type="text" id="myGuestSearchInput" ng-keyup="mySearchInFiltering()" placeholder="Search Attendee"></div>
+      </div>
+      <div style="padding-top: 10px;/* padding-bottom: 0px; *//* margin-right: 0px; *//* margin-left: 0px; */background-color: black;">
+        <form name="guestForm" class="css-form form-signin-myspace" novalidate>
+          <div class="row">
+            <div class="form-group col-xs-2">
+              <button class="btn btn-large btn-primary" type="submit" ng-disabled="guestForm.$invalid" ng-click="addGuest(guest)">Add Attendee</button>
+            </div>
+            <div class="form-group col-xs-2">
+              <input type="text" name="fisrtName" class="form-control" placeholder="First name" ng-model="guest.firstName" required>
+            </div>
+            <div class="form-group col-xs-2">
+              <input type="text" name="name" class="form-control" placeholder="Last name" ng-model="guest.name" required>
+            </div>
+            <div class="form-group col-xs-2">
+              <input type="text" name="title" class="form-control" placeholder="Title" ng-model="guest.title" required>
+            </div>
+            <div class="form-group col-xs-2">
+              <input type="text" name="orga" class="form-control" placeholder="Organization" ng-model="guest.orga" required>
+            </div><!-- 
+            <div class="form-group col-xs-2">
+              <select name="" class="form-control" ng-placeholder="+ Guest" ng-model="" ng-options="room.id as room.name for room in rooms">
+              </select>
+            </div> -->
+          </div>
+        </form>
+      </div>
+      <div>
+        <table id="guestTable" class="table table-bordered table-sm table-striped table-hover">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First</th>
+              <th>Last</th>
+              <th>Table/Row Name</th>
+              <th>Seat</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="guest in guests | orderBy:'name'" ng-click="">
+              <td></td>
+              <td>{{guest.firstName}}</td>
+              <td>{{guest.name}}</td>
+              <td>Nom table</td>
+              <td>Numéro place</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div role="tabpanel" class="tab-pane active" id="map">
+      <div id="myFlexDiv">
+    	 <div id="myGuests" style="border: solid 1px black"></div>
+        <!-- a go-diagram element referring to the model, originally written as: -->
+        <!-- &lt;go-diagram go-model="model" style="border: solid 1px blue; width:100%; height:400px"&gt;&lt;/go-diagram&gt; -->
+        <go-diagram go-model="model" guest-list="guestList" style="border: solid 1px black;"></go-diagram>
+      </div>
+      
+      list guest : {{guestList.nodeDataArray}}
+      <br/>
+      guest selected : {{guestList.selectedNodeData}}
+      <br/>
+      Number of node data: {{model.nodeDataArray.length}}
+      <br />
+      Alpha node location: {{model.findNodeDataForKey(1).loc}}
+      <br />
+      Selected node: {{model.selectedNodeData.key}}  <input type="text" ng-model="model.selectedNodeData.name"></input>
+      <br />
+      Number of link data: {{model.linkDataArray.length}}
+      <br/>
+      model.nodeDataArray : {{model.nodeDataArray}}
+      <br/>
+      model : {{model}}
+      <p>
+      <p>
+      You can also replace the <a>Diagram.model</a> just by setting the "model" property on the $scope,
+      since the "goDiagram" directive watches that property for changes.
+      </p>
+      <button ng-click="replaceModel()">Replace Model</button>
+    </div>
+  </div>
+</div>

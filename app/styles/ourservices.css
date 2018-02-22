@@ -1,0 +1,8 @@
+#ourservices > div.row {
+  height: 100px;
+}
+
+#ourservices > div.row > div.span4 {
+  width: 28%;
+  text-align: center;
+}

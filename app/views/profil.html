@@ -1,0 +1,69 @@
+<div class="container">
+	<div class="row">        
+    <div class="col-md-7 " ng-show="isUpdate== false">
+      <div class="panel panel-default">
+        <div class="panel-heading"><h4>Profil</h4></div>
+        <div class="panel-body">
+          <div class="box box-info" >
+            <div class="box-body">
+              <div class="col-sm-6">
+                <div  align="center"> <img alt="User Pic" src="https://x1.xingassets.com/assets/frontend_minified/img/users/nobody_m.original.jpg" id="profile-image1" class="img-circle img-responsive">
+                  <input id="profile-image-upload" class="hidden" type="file">
+                  <div style="color:#999;" >Cliquer ici pour changer la photo</div>
+                      <!--Upload Image Js And Css-->
+                </div>
+                <br>
+                <!-- /input-group -->
+              </div>
+              <div class="col-sm-6">
+                <h4 style="color:#00b1b1;">{{loggedUser.firstName}} {{loggedUser.lastName}}</h4>
+                <span><p>Organisateur</p></span>            
+              </div>
+              <div class="clearfix"></div>
+              <hr style="margin:5px 0 5px 0;">                       
+              <div class="col-sm-5 col-xs-6 tital " >Prénom:</div><div class="col-sm-7 col-xs-6 ">{{loggedUser.firstName}}</div>
+              <div class="clearfix"></div>
+              <div class="bot-border"></div>
+              <div class="col-sm-5 col-xs-6 tital " >Nom:</div><div class="col-sm-7">{{loggedUser.lastName}}</div>
+              <div class="clearfix"></div>
+              <div class="bot-border"></div>
+              <div class="col-sm-5 col-xs-6 tital " >Email:</div><div class="col-sm-7"> {{loggedUser.email}}</div>
+              <div class="clearfix"></div>
+              <div class="bot-border"></div>
+              <div class="col-sm-5 col-xs-6 tital " >Phone Number:</div><div class="col-sm-7">{{loggedUser.phoneNumber}}</div>
+              <div class="clearfix"></div>
+            <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+            <a class="pull-right" ng-click="isUpdate = true" style="cursor: pointer;">Modifier mon compte</a>
+          </div>
+        </div> 
+      </div>
+    </div> 
+    <div id="subscriptionForm" ng-show="isUpdate">
+      <form name="subscriptionForm" class="css-form form-signin form-signin-login" novalidate>
+        <label>Modification de compte</label>
+        <input type="text" name="lastName" class="form-control" placeholder="Nom" ng-model="user.lastName" required>
+        <input type="text" name="firstName" class="form-control" placeholder="Prénom" ng-model="user.firstName" required>
+        <input type="email" name="email" class="form-control" placeholder="Email" ng-model="user.email" required>
+        <input type="text" name="phoneNumber" class="form-control" placeholder="Numéro de téléphone" ng-model="user.phoneNumber" required>
+        <input type="password" name="password" class="form-control" placeholder="Mot de passe" ng-model="user.password" required>
+        <input type="password" name="passwordCnf" class="form-control" placeholder="Confirmation mot de passe" required>
+        <a class="btn btn-large btn-primary" class="pull-right" ng-click="isUpdate = false" style="cursor: pointer;">Annuler</a>
+        <button class="btn btn-large btn-primary" type="submit" ng-disabled="subscriptionForm.$invalid" ng-click="submitModification(user)">Valider</button>
+      </form>
+    </div> 
+    <script>
+      $(function() {
+        $('#profile-image1').on('click', function() {
+            $('#profile-image-upload').click();
+        });
+      });       
+    </script>
+ </div>
+</div>
+
+
+
+
+         

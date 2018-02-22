@@ -1,0 +1,58 @@
+/* Use a Flexbox to make the Palette/Diagram responsive */
+#myFlexDiv {
+  display: -webkit-flex;
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+  justify-content: center;
+}
+@media (min-width: 768px) {
+  #myGuests {
+    width: 100px;
+    height: 500px;
+    margin-right: 10px;
+  }
+  #myDiagramDiv {
+    height: 500px;
+    flex: 1;
+  }
+}
+@media (max-width: 767px) {
+  #myGuests {
+    width: 90%;
+    height: 100px;
+    margin-bottom: 10px;
+  }
+  #myDiagramDiv {
+    width: 90%;
+    height: 500px;
+  }
+}
+
+/* ************ */
+#homeBar {
+  margin: 0px 0px 15px -15px;
+}
+
+.form-control {
+    padding-right: 30px;
+}
+
+.form-control + .glyphicon {
+  position: absolute;
+  right: 0;
+  padding: 8px 27px;
+}
+
+.dropdown-menu {
+min-width: 80px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -1px;
+}
