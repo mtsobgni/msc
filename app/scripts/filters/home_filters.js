@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc filter
- * @name seatingChartApp
+ * @name mscApp.filters
  * @description
  * # filter for the home page
- * Factory in the seatingChartApp.
+ * Factory in the mscApp.
  */
-angular.module('seatingChartApp')
+angular.module('mscApp')
 	.filter('searchedGuestFilter', function() {
 		return function(guests, string) {
             if(!string)

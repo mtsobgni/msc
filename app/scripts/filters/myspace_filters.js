@@ -2,12 +2,12 @@
 
 /**
  * @ngdoc filter
- * @name seatingChartApp
+ * @name mscApp.filters
  * @description
  * # filter for the myspace page
- * Factory in the seatingChartApp.
+ * Factory in the mscApp.
  */
-angular.module('seatingChartApp')
+angular.module('mscApp')
 	.filter('searchedEvtFilter', function() {
 		return function(events, string, eventState, EVENTSATES) {
             var mydate = new Date();
