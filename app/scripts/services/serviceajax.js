@@ -1,7 +1,5 @@
 'use strict';
 
-
-
 /**
  * @ngdoc service
  * @name mscApp.serviceAjax
@@ -56,7 +54,7 @@ angular.module('mscApp')
                     return $http.get(url, headers);
                 },
                 set: function (event) {
-                    url = serverURL + 'api/event/' + event.id;
+                    url = serverURL + 'api/event';
                     return $http.put(url, event, headers);
                 },
                 all: function () {
@@ -80,17 +78,6 @@ angular.module('mscApp')
                 }
             };
         },
-        mail: function () {
-            return {
-                send: function (data) {
-                    reqMail.method = 'POST';
-                    reqMail.url = serverURLMail + 'sendMail' ;
-                    reqMail.body = data;
-                    return $http(reqMail);
-                    
-                }
-            };
-        },
         guests: function () {
             return {
                 get: function (id) {
@@ -105,6 +92,14 @@ angular.module('mscApp')
                     return $http.post(url, guest, headers);
                 }
             };
+        },
+        contacts: function () {
+            return {
+                sendMail: function (data) {
+                    url = serverURL + 'api/contact/contact-form';
+                    return $http.post(url, data, headers)
+                }
+            }
         }
     };
   });

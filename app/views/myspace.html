@@ -1,11 +1,10 @@
 <div id="myspace">
 	<h3>Mes évènements</h3>
 	
-
 	<form name="addEventForm" class="css-form form-signin-myspace" novalidate ng-show="!isRoomManager">
 		<div class="row">
 			<div class="form-group col-xs-2">
-				<input type="text" name="id" class="form-control" placeholder="Code event." ng-model="event.id" required>
+				<input type="text" name="id" class="form-control" placeholder="Code event." ng-model="event._id" required>
 			</div>
 			<div class="form-group col-xs-1">
 				<button class="btn btn-large btn-primary" type="submit" ng-disabled="addEventForm.$invalid" ng-click="addEvent(event)">Ajouter un évènement</button>
@@ -13,54 +12,40 @@
 		</div>
 	</form>
 
-
-    <!--test  -->  
+	<button class="btn btn-large btn-primary" ng-click="sendMail()" ng-show="false">Send mail</button>
+ 
     <div class="container">
-		<div class="row">
+		<!-- <div class="row"> -->
             <!-- Nav tabs -->
-            <div class="tabbable-panel">
-            	<div class="tabbable-line">
-                  	<ul class="nav nav-tabs" >
-                    	<li role="presentation" class="active">
-                    		<a href="#AllEvents" aria-controls="home" data-toggle="tab">Tous les évènements</a>
+            <!-- <div class="tabbable-panel"> -->
+            	<!-- <div class="tabbable-line"> -->
+                  	<ul class="nav nav-tabs" id="myTabs">
+                    	<li class="active">
+                    		<a href="#events" ng-click="eventState=EVENTSATES.ALL" data-toggle="tab">Tous</a>
                     	</li>
-                        <li role="presentation">
-                        	<a href="#InProgressEvents" aria-controls="profile" data-toggle="tab">Les évènements en cours </a>
+                        <li>
+                        	<a href="#events" ng-click="eventState=EVENTSATES.INPROGRESS" data-toggle="tab">En cours</a>
                         </li>
-                        <li role="presentation">
-                         	<a href="#OldEvents" aria-controls="messages" data-toggle="tab">Les évènements traités</a>
+                        <li>
+                         	<a href="#events" ng-click="eventState=EVENTSATES.DONE" data-toggle="tab">Terminés</a>
                         </li>
-                        <li role="presentation">
-                        	<a href="#settings" aria-controls="settings" data-toggle="tab">Creer un évènement</a>
+                        <li ng-show="isRoomManager">
+                        	<a href="#eventCreation" data-toggle="tab">Creer un évènement</a>
                         </li>
                    	</ul>
-
 	            	<!-- Tab panes -->
 	                <div class="tab-content">
-	                    <div class="tab-pane active" id="AllEvents">
+	                    <div id="events" class="tab-pane fade in active">
 	                    	<br>
-	                    	<div class="row">
-	                    		<tr>
+	                    	
+							<div class="row">
+		                		<tr>
 									<div class="form-group col-xs-3">
-		            					<td><input  class="form-control" ng-model="query[queryBy]" placeholder="Search" /></td>
-		            				</div>
-	        					</tr>
-
-	        					<tr>
-	        						<div class="form-group col-xs-3">
-		            					<td class="form-control" align="right">Search By :</td>
-							            <td>
-							                <select ng-model="queryBy">
-							                    <option value="$"></option>
-							                    <option value="name">Evènements</option>
-							                    <option value="company">Lieux</option>
-							                    <option value="designation">GUESTNUMBER</option>
-							                </select>   
-							            </td>
+		            					<td><input class="form-control" ng-model="searchedEvt" placeholder="Rechercher un évènement"/></td>
 		            				</div>
 						        </tr>	
-	    					</div>  
-	    					<table class="table table-sm table-striped table-hover">
+							</div>
+	    					<table id="eventTable" class="table table-sm table-striped table-hover">
 								<thead>
 									<tr>
 										<th>Evènements</th>
@@ -70,7 +55,7 @@
 									</tr>
 								</thead>
 								<tbody>
-									<tr ng-repeat="event in events | orderBy:'name' | filter:query" ng-click="goToRoom(event)">
+									<tr ng-repeat="event in events | orderBy:['name','where','startDate',guestNumber] | searchedEvtFilter:searchedEvt:eventState:EVENTSATES" ng-click="goToRoom(event)">
 										<td>{{event.name}}</td>
 										<td>{{event.where}}</td>
 										<td>{{event.startDate | date : "dd/MM/yyyy"}}</td>
@@ -79,80 +64,50 @@
 								</tbody>
 							</table>
 	                    </div>
-	                    <div class="tab-pane" id="InProgressEvents">
-	                    	<br>
-	                    	<table class="table table-sm table-striped table-hover">
-								<thead>
-									<tr>
-										<th>Evènements</th>
-										<th>Lieux</th>
-										<th>Dates</th>
-										<th>Nombre d’invités</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr ng-repeat="event in events | orderBy:'name' | filter:query |filter: inProgressEventFunction" ng-click="goToRoom(event)" >
-										<td>{{event.name}}</td>
-										<td>{{event.where}}</td>
-										<td>{{event.startDate | date : "dd/MM/yyyy"}}</td>
-										<td>{{event.guestNumber}}</td>
-										<div ng-if="date - event.startDate >0">{{event.startDate}}</div>
-									</tr>
-								</tbody>
-							</table>
-	                    </div>
-	                    <div class="tab-pane" id="OldEvents">
-	                    	<br>
-	                    	<table class="table table-sm table-striped table-hover">
-								<thead>
-									<tr>
-										<th>Evènements</th>
-										<th>Lieux</th>
-										<th>Dates</th>
-										<th>Nombre d’invités</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr ng-repeat="event in events | orderBy:'name' | filter:query | filter: oldEventFunction" ng-click="goToRoom(event)" >
-										<td>{{event.name}}</td>
-										<td>{{event.where}}</td>
-										<td>{{event.startDate | date : "dd/MM/yyyy"}}</td>
-										<td>{{event.guestNumber}}</td>
-									</tr>
-								</tbody>
-							</table>
-	                	</div>
-	                    <div class="tab-pane" id="settings">
+
+	                    <div class="tab-pane fade" id="eventCreation">
 	                    	<br>
 	                    	<form name="createEventForm" class="css-form form-signin-myspace" novalidate ng-show="isRoomManager">
 								<div class="row">
 									<div class="form-group col-xs-3">
-										<input type="text" name="name" class="form-control" placeholder="Nom évènement" ng-model="event.name" required>
+										<input type="text" name="name" class="form-control" placeholder="Nom évènement" ng-model="newEvent.name" required>
 									</div>
+								</div>
+								<div class="row">
 									<div class="form-group col-xs-3">
-										<select name="room" class="form-control" ng-placeholder="Lieu de cérémonie" ng-model="event.where" ng-options="room.id as room.name for room in rooms">
-										</select>
+										<select name="room" class="form-control" ng-model="newEvent.where" ng-options="room._id as room.name for room in rooms"/>
 									</div>
+								</div>
+								<div class="row">
 									<div class="form-group col-xs-3">
 										<p class="input-group">
-			          						<input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="event.startDate" is-open="popup.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
+			          						<input type="text" class="form-control" uib-datepicker-popup="dd/MM/yyyy" ng-model="newEvent.startDate" is-open="popup.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" />
 			          						<span class="input-group-btn">
 			            						<button type="button" class="btn btn-default" ng-click="open()"><i class="glyphicon glyphicon-calendar"></i></button>
 			          						</span>
 			        					</p>
 									</div>
+								</div>
+								<div class="row">
 									<div class="form-group col-xs-2">
-										<input type="number" min="0" name=guestNumber class="form-control" placeholder="Nb d'invités" ng-model="event.guestNumber" required>
+										<input type="number" min="0" name=guestNumber class="form-control" placeholder="Nb d'invités" ng-model="newEvent.guestNumber" required>
 									</div>
+								</div>
+								<div class="row">
+									<div class="form-group col-xs-3">
+										<input type="email" min="0" name=bookerEmail class="form-control" placeholder="Email du réserveur" ng-model="newEvent.bookerEmail" required>
+									</div>
+								</div>
+								<div class="row">
 									<div class="form-group col-xs-1">
-										<button class="btn btn-large btn-primary" type="submit" ng-disabled="createEventForm.$invalid" ng-click="createEvent(event)">Créer</button>
+										<button class="btn btn-large btn-primary" type="submit" ng-disabled="createEventForm.$invalid" ng-click="createEvent(newEvent)">Créer</button>
 									</div>
 								</div>
 							</form>
 	                    </div>
 	              	</div>
-				</div>
-			</div>
-		</div>
+				<!-- </div> -->
+			<!-- </div> -->
+		<!-- </div> -->
 	</div>
 </div>

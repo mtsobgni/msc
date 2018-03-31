@@ -26,31 +26,6 @@
     </div>
   </div>
 
-  <div class="dropdown">
-    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Ajouter une table
-    <span class="caret"></span></button>
-    <ul class="dropdown-menu">
-      <!-- <li><a tabindex="-1" href="#">HTML</a></li>
-      <li><a tabindex="-1" href="#">CSS</a></li> -->
-      <li class="dropdown-submenu">
-        <a class="test" tabindex="-1" href="#">Ronde<span class="caret"></span></a>
-        <ul class="dropdown-menu">
-          <li><a tabindex="-1" href="#" ng-click="addTable()">4</a></li>
-          <li><a tabindex="-1" ng-click="addTable()">5</a></li>
-          <li><a tabindex="-1" ng-click="addTable()">6</a></li>
-          <!-- <li class="dropdown-submenu">
-            <a class="test" href="#">Another dropdown <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">3rd level dropdown</a></li>
-              <li><a href="#">3rd level dropdown</a></li>
-            </ul>
-          </li> -->
-        </ul>
-      </li>
-    </ul>
-  </div>
-  <button ng-click="triggerPosition()">Déclencher la position</button><br/>
-
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist" id="myTabs">
     <li role="presentation"><a href="#guests">Invités</a></li>
@@ -60,32 +35,24 @@
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane" id="guests">
-      <div class="row" style="padding-top: 10px; padding-bottom: 10px; margin-right: 0px; margin-left: 0px; background-color: pink;">
-        <div class="col-md-8">Attendee Manager {{guests.length}}</div>
-        <div class="col-md-4">Import - Export - More / <input type="text" id="myGuestSearchInput" ng-keyup="mySearchInFiltering()" placeholder="Search Attendee"></div>
-      </div>
-      <div style="padding-top: 10px;/* padding-bottom: 0px; *//* margin-right: 0px; *//* margin-left: 0px; */background-color: black;">
+      <div style="padding-top: 10px;">
         <form name="guestForm" class="css-form form-signin-myspace" novalidate>
           <div class="row">
-            <div class="form-group col-xs-2">
-              <button class="btn btn-large btn-primary" type="submit" ng-disabled="guestForm.$invalid" ng-click="addGuest(guest)">Add Attendee</button>
+            <div class="form-group col-xs-4" style="border-right: 2px solid;">
+              <input class="form-control" ng-model="searchedGuest" placeholder="Rechercher un invité"/>
             </div>
             <div class="form-group col-xs-2">
-              <input type="text" name="fisrtName" class="form-control" placeholder="First name" ng-model="guest.firstName" required>
+              <input type="text" name="fisrtName" class="form-control" placeholder="Prénom" ng-model="newGuest.firstName" required>
             </div>
             <div class="form-group col-xs-2">
-              <input type="text" name="name" class="form-control" placeholder="Last name" ng-model="guest.name" required>
+              <input type="text" name="name" class="form-control" placeholder="Nom" ng-model="newGuest.name" required>
             </div>
             <div class="form-group col-xs-2">
-              <input type="text" name="title" class="form-control" placeholder="Title" ng-model="guest.title" required>
+              <input type="text" name="title" class="form-control" placeholder="Sexe" ng-model="newGuest.title" required>
             </div>
             <div class="form-group col-xs-2">
-              <input type="text" name="orga" class="form-control" placeholder="Organization" ng-model="guest.orga" required>
-            </div><!-- 
-            <div class="form-group col-xs-2">
-              <select name="" class="form-control" ng-placeholder="+ Guest" ng-model="" ng-options="room.id as room.name for room in rooms">
-              </select>
-            </div> -->
+              <button class="btn btn-large btn-primary" type="submit" ng-disabled="guestForm.$invalid" ng-click="addGuest(newGuest)">Ajouter un invité</button>
+            </div>
           </div>
         </form>
       </div>
@@ -94,25 +61,41 @@
           <thead>
             <tr>
               <th>#</th>
-              <th>First</th>
-              <th>Last</th>
-              <th>Table/Row Name</th>
-              <th>Seat</th>
+              <th>Pr�nom</th>
+              <th>Nom</th>
+              <th>Sexe</th>
+              <th>Position</th>
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="guest in guests | orderBy:'name'" ng-click="">
+            <tr ng-repeat="guest in guests | orderBy:['firstName','name','title','position'] | searchedGuestFilter:searchedGuest" ng-click="">
               <td></td>
               <td>{{guest.firstName}}</td>
               <td>{{guest.name}}</td>
-              <td>Nom table</td>
-              <td>Numéro place</td>
+              <td>{{guest.title}}</td>
+              <td>{{guest.position}}</td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
     <div role="tabpanel" class="tab-pane active" id="map">
+      <div class="dropdown" style="padding-top: 10px; padding-bottom: 10px;">
+        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Ajouter une table
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+          <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Ronde<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a tabindex="-1" href="#" ng-click="addTable()">4</a></li>
+              <li><a tabindex="-1" ng-click="addTable()">5</a></li>
+              <li><a tabindex="-1" ng-click="addTable()">6</a></li>
+            </ul>
+          </li>
+        </ul>
+        <button ng-click="triggerPosition()">Déclencher la position</button><br/>
+      </div>
+
       <div id="myFlexDiv">
     	 <div id="myGuests" style="border: solid 1px black"></div>
         <!-- a go-diagram element referring to the model, originally written as: -->

@@ -45,17 +45,20 @@ angular.module('mscApp')
 		$scope.$apply();
 	});
 	
-	$('.test').find('label').bind('click',  function () {
-		// alert("click fired");
-		// $(this).button('complete') // button text will be "finished!"
+	// trigger the selection on the dropdow "Add table"
+	$('.dropdown-submenu a').on("click", function(e) {
+	    $(this).next('ul').toggle();
+	    e.stopPropagation();
+	    e.preventDefault();
 	});
 
 	/* ******* methods ******** */
 
 	$scope.reset = function() {
-		$scope.guest = {};
+		$scope.newGuest = {};
 	};
 
+	// add a new guest
     $scope.addGuest = function(guest) {
     	guest.evtId = evtId;
     	var previousGuests = angular.copy($scope.guests);
@@ -70,12 +73,6 @@ angular.module('mscApp')
             console.log('Error: ' + data);
         });
     };
-
-	$('.dropdown-submenu a').on("click", function(e){
-	    $(this).next('ul').toggle();
-	    e.stopPropagation();
-	    e.preventDefault();
-	  });
 
     var locX = 364.5, locY = 223.5;
 	var tableStd = {"key":-1, "category":"TableC8", "name":"4", "guests":{}, "loc":locX+" "+locY};
@@ -162,36 +159,21 @@ angular.module('mscApp')
 		}
 	});
 
-	// $scope.$watch("isPlanView", function(newV, oldV) {
-	// 	console.log(newV + " " + oldV);
-	// }, true);
-
     /* ******* godiagram.js  ********* */
 
-	$scope.guestList = new go.GraphLinksModel([
-		{ key: "Tyrion Lannister" },
-		{ key: "Daenerys Targaryen", plus: 3 },  // dragons, of course
-		{ key: "Jon Snow" },
-		{ key: "Stannis Baratheon" },
-		{ key: "Arya Stark" },
-		{ key: "Jorah Mormont" },
-		{ key: "Sandor Clegane" },
-		{ key: "Joffrey Baratheon" },
-		{ key: "Brienne of Tarth" },
-		{ key: "Hodor" }
-		]);
+	$scope.guestList = new go.GraphLinksModel();
 
 	$scope.model = new go.GraphLinksModel($scope.tables);
 	$scope.model.selectedNodeData = null;
 	$scope.replaceModel = function() {
 		$scope.model = new go.GraphLinksModel(
 			[
-			  { key: 11, name: "zeta", color: "red" },
-			  { key: 12, name: "eta", color: "green" }
+				{ key: 11, name: "zeta", color: "red" },
+				{ key: 12, name: "eta", color: "green" }
 			],
 			[
-			  { from: 11, to: 12 }
+				{ from: 11, to: 12 }
 			]
 		);
-	};
-  });
+	};  
+});

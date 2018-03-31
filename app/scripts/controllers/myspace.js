@@ -16,13 +16,18 @@ angular.module('mscApp')
     $scope.isRoomManager = $rootScope.loggedUser.role === '1'; // if it's a room's owner
 
     $scope.events = [];
-    $scope.query = {};
-    $scope.contact = {};
-    $scope.queryBy = '$';
-    $scope.date = new Date();
-
+    $scope.EVENTSATES = {
+        ALL: 1,
+        INPROGRESS: 2,
+        DONE: 3
+    };
+    $scope.eventState = $scope.EVENTSATES.ALL;
+    
+    $scope.newEvent = {};
+    $scope.newEvent.startDate = new Date();
     serviceAjax.rooms().all().then(function(data) {
         $scope.rooms = data.data;
+        $scope.newEvent.where = $scope.rooms[0]._id;
     }, function(data) {
         console.log('Error: ' + data);
     });
@@ -54,16 +59,18 @@ angular.module('mscApp')
     });
     
     $scope.createEvent = function(event) {
+        event.by = $rootScope.loggedUser._id;
         serviceAjax.events().create(event).then(function(data) {
             event = data.data;
             
-            $scope.contact.name= $rootScope.loggedUser.name;
-            $scope.contact.email= $rootScope.loggedUser.username;
-            $scope.contact.msg= event._id;
+            var mail = {};
+            mail.contactEmail = event.bookerEmail || "tchendjouyvan@yahoo.fr";
+            mail.contactMsg = event._id;
+            mail.contactSubject = $rootScope.loggedUser.firstName;
             
-            serviceAjax.mail().send($scope.contact).then(function(data) {
-                console.log('Message envoyé ');
-            })
+            serviceAjax.contacts().sendMail(mail).then(function(data){
+                console.log("Sending done");
+            });
             
             serviceAjax.rooms().get(event.where).then(function(data) {
                 event.where = data.data.name;
@@ -92,10 +99,20 @@ angular.module('mscApp')
     };
 
     $scope.goToRoom = function(event) {
+        if($scope.isRoomManager) return;
         $location.path("/home").search({"evtId": event._id});
     };
 
     /*****************/
+
+    $('#myTabs a').click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        $scope.$apply();
+    });
+
+    /*****************/
+
     // configuration datePicker
     $scope.event = { startDate : null };
     $scope.today = function() {
@@ -129,16 +146,21 @@ angular.module('mscApp')
 
     /*****************/
 
-    $scope.inProgressEventFunction = function(event){
-        var mydate = new Date();
-        var eventdate = new Date(event.startDate);
-        return eventdate >= mydate;
+    $scope.eventFunctionFilter = function(eventState){
+        return function(event) {
+            var mydate = new Date();
+            var eventdate = new Date(event.startDate);
+            return eventState==$scope.EVENTSATE.ALL ? true : 
+            eventState==$scope.EVENTSATE.DONE ? eventdate < mydate : eventdate >= mydate;
+        };
     };
 
-    $scope.oldEventFunction = function(event){
-        var mydate = new Date();
-        var eventdate = new Date(event.startDate);
-        return eventdate < mydate;
+    /*****************/
+
+    $scope.sendMail = function(){
+        serviceAjax.contacts().sendMail().then(function(data){
+            console.log("Sending done");
+        });
     };
 
   });

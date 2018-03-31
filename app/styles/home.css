@@ -56,3 +56,8 @@ min-width: 80px;
   left: 100%;
   margin-top: -1px;
 }
+
+#guestTable th, #guestTable td {
+  text-align:center; 
+  vertical-align:middle;
+}
