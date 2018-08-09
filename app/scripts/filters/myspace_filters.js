@@ -10,6 +10,9 @@
 angular.module('mscApp')
 	.filter('searchedEvtFilter', function() {
 		return function(events, string, eventState, EVENTSATES) {
+			if(!events)
+				return [];
+			
             var mydate = new Date();
             events = events.filter(function(event) {
             	var eventdate = new Date(event.startDate);
