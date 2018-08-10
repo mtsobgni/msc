@@ -32,7 +32,30 @@ angular.module('mscApp')
         console.log('Error: ' + data);
     });
 
-    serviceAjax.events().all().then(function(data) {
+
+    function fillEventsWithRooms(events) {
+        events.forEach(function(event) {
+            serviceAjax.rooms().get(event.where).then(function(data) {
+                event.where = data.data.name;
+                $scope.events.push(event);
+            }, function(data) {
+                console.log('Error: ' + data);
+            });
+        });
+    }
+
+    if($scope.isRoomManager) {
+        serviceAjax.events().getBy($rootScope.loggedUser._id).then(function(data) {
+            var events = data.data;
+            fillEventsWithRooms(events);
+        });
+    } else {
+        serviceAjax.events().getByOnwer($rootScope.loggedUser._id).then(function(data) {
+            var events = data.data;
+            fillEventsWithRooms(events);
+        });
+    }
+    /*serviceAjax.events().all().then(function(data) {
         var events = data.data;
         events.forEach(function(event) {
             if($scope.isRoomManager) {
@@ -56,7 +79,7 @@ angular.module('mscApp')
         });
     }, function(data) {
         console.log('Error: ' + data);
-    });
+    });*/
     
     $scope.createEvent = function(event) {
         event.by = $rootScope.loggedUser._id;

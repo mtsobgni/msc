@@ -19,7 +19,21 @@ angular.module('mscApp')
         return;
     }
 
-    $scope.guests = [];
+    $scope.guests = [{evtId
+:
+"5ad1c1787ca78a11c6daad86",
+firstName
+:
+"fer",
+key
+:
+"fer fer",
+name
+:
+"fer",
+_id
+:
+"5b6d6ede26702037d0894728"}];
     $scope.tables = [
 		{"key":1,"category":"TableR3","name":"Head 1","guests":{},"loc":"-91.50 -6.00"},
 		{"key":2,"category":"TableR3","name":"Head 2","guests":{},"loc":"102.50 -15"},

@@ -14,10 +14,7 @@ angular.module('mscApp')
     var url = serverURLMail;
 
     var reqMail = {
-        url: serverURLMail//,
-        // headers: {
-        // 'Content-Type': 'application/json'
-        // }
+        url: serverURLMail
     };
 
     // Public API here
@@ -50,19 +47,31 @@ angular.module('mscApp')
         events: function () {
             return {
                 get: function (id) {
-                    url = serverURL + 'api/event/' + (id || '');
+                    url = serverURL + 'event/' + (id || '');
+                    return $http.get(url, headers);
+                },
+                getBy: function (id) {
+                    url = serverURL + 'event/by/' + (id || '');
+                    return $http.get(url, headers);
+                },
+                getByOnwer: function (id) {
+                    url = serverURL + 'event/owner/' + (id || '');
+                    return $http.get(url, headers);
+                },
+                getByRoom: function (id) {
+                    url = serverURL + 'event/room/' + (id || '');
                     return $http.get(url, headers);
                 },
                 set: function (event) {
-                    url = serverURL + 'api/event';
+                    url = serverURL + 'event';
                     return $http.put(url, event, headers);
                 },
                 all: function () {
-                    url = serverURL + 'api/event';
+                    url = serverURL + 'event';
                     return $http.get(url, headers);
                 },
                 create: function (event) {
-                    url = serverURL + 'api/event';
+                    url = serverURL + 'event';
                     return $http.post(url, event, headers);
                 }
             };

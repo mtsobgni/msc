@@ -10,7 +10,7 @@
 angular.module('mscApp')
 	.filter('searchedEvtFilter', function() {
 		return function(events, string, eventState, EVENTSATES) {
-			if(!events)
+			if(typeof events === 'undefined' || !events)
 				return [];
 			
             var mydate = new Date();
