@@ -168,17 +168,6 @@ angular.module('mscApp')
 
     /*****************/
 
-    $scope.eventFunctionFilter = function(eventState){
-        return function(event) {
-            var mydate = new Date();
-            var eventdate = new Date(event.startDate);
-            return eventState===$scope.EVENTSATE.ALL ? true : 
-            eventState===$scope.EVENTSATE.DONE ? eventdate < mydate : eventdate >= mydate;
-        };
-    };
-
-    /*****************/
-
     $scope.sendMail = function(){
         serviceAjax.contacts().sendMail().then(function(){
             console.log("Sending done");

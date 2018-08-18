@@ -14,11 +14,11 @@ angular.module('mscApp')
 				return [];
 			}
 			
-            var mydate = new Date();
+            var now = new Date().toLocaleDateString();
             events = events.filter(function(event) {
-            	var eventdate = new Date(event.startDate);
+            	var eventdate = new Date(event.startDate).toLocaleDateString();
             	return eventState===EVENTSATES.ALL ? true : 
-            		eventState===EVENTSATES.DONE ? eventdate < mydate : eventdate >= mydate;
+            		eventState===EVENTSATES.DONE ? eventdate < now : eventdate >= now;
             });
 
             if(!string) {
