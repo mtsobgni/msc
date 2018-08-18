@@ -21,7 +21,6 @@
       <div class="col-md-3">
         <button class="btn btn-large btn-primary" type="submit" ng-click="">Print</button>
         <button class="btn btn-large btn-primary" type="submit">Import</button>
-        <button class="btn btn-large btn-primary active" type="button">Lily</button>
       </div>
     </div>
   </div>
@@ -36,44 +35,42 @@
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane" id="guests">
       <div style="padding-top: 10px;">
-        <form name="guestForm" class="css-form form-signin-myspace" novalidate>
-          <div class="row">
-            <div class="form-group col-xs-4" style="border-right: 2px solid;">
-              <input class="form-control" ng-model="searchedGuest" placeholder="Rechercher un invité"/>
-            </div>
-            <div class="form-group col-xs-2">
-              <input type="text" name="fisrtName" class="form-control" placeholder="Prénom" ng-model="newGuest.firstName" required>
-            </div>
-            <div class="form-group col-xs-2">
-              <input type="text" name="name" class="form-control" placeholder="Nom" ng-model="newGuest.name" required>
-            </div>
-            <div class="form-group col-xs-2">
-              <input type="text" name="title" class="form-control" placeholder="Sexe" ng-model="newGuest.title" required>
-            </div>
-            <div class="form-group col-xs-2">
-              <button class="btn btn-large btn-primary" type="submit" ng-disabled="guestForm.$invalid" ng-click="addGuest(newGuest)">Ajouter un invité</button>
-            </div>
+        <div class="row">
+          <div class="form-group col-xs-2" style="border-right: 2px solid;">
+            <input class="form-control" ng-model="searchedGuest" placeholder="Rechercher"/>
+            <span class="glyphicon glyphicon-search" aria-hidden="true"> </span>
           </div>
-        </form>
+          <div class="form-group col-xs-2">
+            <button class="btn btn-large btn-primary" type="submit" ng-click="addGuest()">Nouveau invité</button>
+          </div>
+        </div>
       </div>
       <div>
         <table id="guestTable" class="table table-bordered table-sm table-striped table-hover">
           <thead>
             <tr>
-              <th>#</th>
-              <th>Pr�nom</th>
+              <th><input class="form-check-input" type="checkbox" value="" ng-click="toggleAllGuests(!isSelectedAllGuests)"></th>
+              <th></th>
+              <th>Titre</th>
               <th>Nom</th>
-              <th>Sexe</th>
-              <th>Position</th>
+              <th>Prénom</th>
+              <th>Place</th>
+              <th>Téléphone</th>
+              <th>Email</th>
+              <th>Commentaires</th>
             </tr>
           </thead>
           <tbody>
             <tr ng-repeat="guest in guests | orderBy:['firstName','name','title','position'] | searchedGuestFilter:searchedGuest" ng-click="">
-              <td></td>
-              <td>{{guest.firstName}}</td>
+              <td><input class="form-check-input" type="checkbox" value="guest._id" ng-model="guest.selected"></td>
+              <td><span class="glyphicon glyphicon-trash" aria-hidden="true" ng-click="deleteGuest(guest)" style="cursor: pointer;"> </span></td>
+              <td>{{guest.title | labelTitleFilter:titles}}</td>
               <td>{{guest.name}}</td>
-              <td>{{guest.title}}</td>
+              <td>{{guest.firstName}}</td>
               <td>{{guest.position}}</td>
+              <td>{{guest.phoneNumber}}</td>
+              <td>{{guest.email}}</td>
+              <td>{{guest.comment}}</td>
             </tr>
           </tbody>
         </table>
@@ -93,11 +90,11 @@
             </ul>
           </li>
         </ul>
-        <button ng-click="triggerPosition()">D�clencher la position</button><br/>
+        <button ng-click="triggerPosition()">Déclencher la position</button><br/>
       </div>
 
       <div id="myFlexDiv">
-    	 <div id="myGuests" style="border: solid 1px black"></div>
+        <div id="myGuests" style="border: solid 1px black"></div>
         <!-- a go-diagram element referring to the model, originally written as: -->
         <!-- &lt;go-diagram go-model="model" style="border: solid 1px blue; width:100%; height:400px"&gt;&lt;/go-diagram&gt; -->
         <go-diagram go-model="model" guest-list="guestList" style="border: solid 1px black;"></go-diagram>

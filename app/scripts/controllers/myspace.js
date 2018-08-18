@@ -8,7 +8,7 @@
  * Controller of the mscApp
  */
 angular.module('mscApp')
-  .controller('MyspaceCtrl', function ($rootScope, $scope, serviceAjax, $location, $filter) {
+  .controller('MyspaceCtrl', function ($rootScope, $scope, serviceAjax, $location, $uibModal) {
     if(!$rootScope.loggedUser) {
         $location.path("/main");
         return;
@@ -55,31 +55,6 @@ angular.module('mscApp')
             fillEventsWithRooms(events);
         });
     }
-    /*serviceAjax.events().all().then(function(data) {
-        var events = data.data;
-        events.forEach(function(event) {
-            if($scope.isRoomManager) {
-                serviceAjax.rooms().get(event.where).then(function(data) {
-                    var room = data.data;
-                    event.where = room.name;
-                    if(room.manager === $rootScope.loggedUser._id) {
-                        $scope.events.push(event);
-                    }
-                }, function(data) {
-                    console.log('Error: ' + data);
-                });
-            } else if(event.by === $rootScope.loggedUser._id) {
-                serviceAjax.rooms().get(event.where).then(function(data) {
-                    event.where = data.data.name;
-                    $scope.events.push(event);
-                }, function(data) {
-                    console.log('Error: ' + data);
-                });
-            }
-        });
-    }, function(data) {
-        console.log('Error: ' + data);
-    });*/
     
     $scope.createEvent = function(event) {
         event.by = $rootScope.loggedUser._id;
@@ -87,12 +62,34 @@ angular.module('mscApp')
             event = data.data;
             
             var mail = {};
-            mail.contactEmail = event.bookerEmail || "tchendjouyvan@yahoo.fr";
+            mail.contactEmail = event.bookerEmail;
             mail.contactMsg = event._id;
             mail.contactSubject = $rootScope.loggedUser.firstName;
             
-            serviceAjax.contacts().sendMail(mail).then(function(data){
+            serviceAjax.contacts().sendMail(mail).then(function(){
                 console.log("Sending done");
+            
+                if(event){
+                    var modalInstance = $uibModal.open({
+                      templateUrl: '../../views/infoPopup.html',
+                      controller: 'infoPopupCtrl',
+                      resolve: {
+                        event: function () {
+                          return event;
+                        }
+                      }
+                    });
+
+                    modalInstance.result.then(
+                        function (event) { //$uibModalInstance.close
+                            console.log($scope.newEvent);
+                            $scope.newEvent = {};
+                            $scope.newEvent.startDate = new Date();
+                        }, 
+                        function (msg) {//$uibModalInstance.dismiss
+                        }
+                    );
+                }
             });
             
             serviceAjax.rooms().get(event.where).then(function(data) {
@@ -122,7 +119,9 @@ angular.module('mscApp')
     };
 
     $scope.goToRoom = function(event) {
-        if($scope.isRoomManager) return;
+        if($scope.isRoomManager) {
+            return;
+        }
         $location.path("/home").search({"evtId": event._id});
     };
 
@@ -173,17 +172,16 @@ angular.module('mscApp')
         return function(event) {
             var mydate = new Date();
             var eventdate = new Date(event.startDate);
-            return eventState==$scope.EVENTSATE.ALL ? true : 
-            eventState==$scope.EVENTSATE.DONE ? eventdate < mydate : eventdate >= mydate;
+            return eventState===$scope.EVENTSATE.ALL ? true : 
+            eventState===$scope.EVENTSATE.DONE ? eventdate < mydate : eventdate >= mydate;
         };
     };
 
     /*****************/
 
     $scope.sendMail = function(){
-        serviceAjax.contacts().sendMail().then(function(data){
+        serviceAjax.contacts().sendMail().then(function(){
             console.log("Sending done");
         });
     };
-
-  });
+});

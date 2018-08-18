@@ -1,0 +1,18 @@
+<div>
+	<div class="modal-header">
+		<h3 class="modal-title">Nouveau invité</h3>
+	</div>
+	<div class="modal-body">
+		<form name="guestForm" class="css-form form-signin" novalidate>
+			<select name="title" class="form-control" placeholder="Sexe" ng-model="newGuest.title" ng-options="title._id as title.label for title in titles" required/>
+			<input type="text" name="fisrtName" class="form-control" placeholder="Prénom" ng-model="newGuest.firstName" required>
+			<input type="text" name="name" class="form-control" placeholder="Nom" ng-model="newGuest.name" required>
+			<input type="text" name="phoneNumber" class="form-control" placeholder="Téléphone" ng-model="newGuest.phoneNumber" required>
+			<input type="email" name="email" class="form-control" placeholder="Email" ng-model="newGuest.email" required>
+			<input type="text" name="comment" class="form-control" placeholder="Commentaire" ng-model="newGuest.comment" required>
+			
+			<button class="btn btn-large btn-primary" type="submit" ng-disabled="subscriptionForm.$invalid" ng-click="addGuest(newGuest)">Ajouter</button>
+			<button class="btn btn-large btn-primary" type="submit" ng-disabled="subscriptionForm.$invalid" ng-click="close()">Annuler</button>
+		</form>
+	</div>
+</div>

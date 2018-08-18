@@ -8,32 +8,22 @@
  * Controller of the mscApp
  */
 angular.module('mscApp')
-  .controller('HomeCtrl', function ($rootScope, $scope, serviceAjax, $location, $routeParams) {
+  .controller('HomeCtrl', function ($rootScope, $scope, serviceAjax, $location, $routeParams, $uibModal) {
     if(!$rootScope.loggedUser) {
         // $location.path("/main");
     }
 
-    var evtId = $routeParams.evtId;
-    if(!evtId) {
+    var _evtId = $routeParams.evtId;
+    if(!_evtId) {
     	$location.path("/space");
         return;
     }
 
-    $scope.guests = [{evtId
-:
-"5ad1c1787ca78a11c6daad86",
-firstName
-:
-"fer",
-key
-:
-"fer fer",
-name
-:
-"fer",
-_id
-:
-"5b6d6ede26702037d0894728"}];
+    $scope.titles = [
+    	{'_id':1, 'label':'Monsieur'},
+    	{'_id':2, 'label':'Madame'}
+    ];
+
     $scope.tables = [
 		{"key":1,"category":"TableR3","name":"Head 1","guests":{},"loc":"-91.50 -6.00"},
 		{"key":2,"category":"TableR3","name":"Head 2","guests":{},"loc":"102.50 -15"},
@@ -42,12 +32,13 @@ _id
 	];
     $scope.isPlanView = true;
 
-    serviceAjax.guests().all(evtId).then(function(data) {
-        $scope.guests = data.data;
-
-        $scope.guests.forEach(function(guest) {
+    serviceAjax.guests().all(_evtId).then(function(data) {
+        var guests = data.data;
+        guests.forEach(function(guest) {
         	guest.key = guest.firstName + ' ' + guest.name;
+        	guest.selected = false;
         });
+        $scope.guests = guests;
     }, function(data) {
         console.log('Error: ' + data);
     });
@@ -68,25 +59,61 @@ _id
 
 	/* ******* methods ******** */
 
-	$scope.reset = function() {
-		$scope.newGuest = {};
-	};
+	/* ******* guest ******** */
 
 	// add a new guest
-    $scope.addGuest = function(guest) {
-    	guest.evtId = evtId;
-    	var previousGuests = angular.copy($scope.guests);
-        serviceAjax.guests().create(guest).then(function(data) {
-            guest = data.data;
-            guest.key = guest.firstName + ' ' + guest.name;
-            previousGuests.push(guest);
-            $scope.guests = previousGuests;
+    $scope.addGuest = function() {
+	    var modalInstance = $uibModal.open({
+			templateUrl: '../../views/newGuestPopup.html',
+			controller: 'newGuestPopupCtrl',
+			resolve: {
+				guestList: function () {
+				  return $scope.guests;
+				},
+				eventId: function () {
+					return _evtId;
+				}
+			}
+		});
 
-            $scope.reset(); 
+		modalInstance.result.then(
+			function (msg) { //$uibModalInstance.close
+			    console.log(msg);
+			}, 
+			function (msg) {//$uibModalInstance.dismiss
+				console.log(msg);
+			}
+		);
+	};
+
+    $scope.deleteGuest = function(guest) {
+    	serviceAjax.guests().delete(guest._id).then(function(data) {
+            $scope.guests.splice($scope.guests.indexOf(guest),1);
         }, function(data) {
             console.log('Error: ' + data);
         });
     };
+
+    $scope.selectedGuests = [];
+    $scope.isSelectedAllGuests = false;
+    $scope.toggleAllGuests = function(isSelectedAllGuests) {
+    	$scope.guests.forEach(function(guest) {
+			guest.selected = isSelectedAllGuests;
+    	});
+
+    	$scope.isSelectedAllGuests = isSelectedAllGuests;
+    };
+
+	// Watch guests for changes
+	$scope.$watch("guests|filter:{selected:true}", function (nv) {
+		if(nv!==undefined) {
+			$scope.selectedGuests = nv.map(function (guest) {
+				return guest._id;
+			});
+		}
+	}, true);
+
+	/* ******* table ******** */
 
     var locX = 364.5, locY = 223.5;
 	var tableStd = {"key":-1, "category":"TableC8", "name":"4", "guests":{}, "loc":locX+" "+locY};
@@ -109,13 +136,15 @@ _id
     	var model = $scope.guestList;
     	var data = model.findNodeDataForKey("invite4 test");
     	if(!data) {
-    		model = $scope.model
+    		model = $scope.model;
     		data = model.findNodeDataForKey("invite4 test");
     	}
-    	if(!data) return;
+    	if(!data) {
+    		return;
+    	}
 
     	triggerTime++;
-		if(triggerTime == 10) {
+		if(triggerTime === 10) {
 			triggerTime = 0;
 			return;
 		}
@@ -149,7 +178,7 @@ _id
 	$scope.isFullScreen = false;
 	$scope.goFullScreen = function(elt) {
 		$scope.isFullScreen = true;
-		var elt = elt || document.getElementById("myFlexDiv");
+		elt = elt || document.getElementById("myFlexDiv");
 	    if (elt.mozRequestFullScreen) {
 			elt.mozRequestFullScreen();
 	    } else if (elt.webkitRequestFullScreen) {
