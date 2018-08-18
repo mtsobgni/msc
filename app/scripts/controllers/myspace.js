@@ -104,7 +104,7 @@ angular.module('mscApp')
     };
 
     $scope.addEvent = function(event) {
-        event.by = $rootScope.loggedUser._id;
+        event.owner = $rootScope.loggedUser._id;
         serviceAjax.events().set(event).then(function(data) {
             event = data.data;
             if($scope.events.findIndex(function(evt) { return evt._id === event._id; }) === -1) {
