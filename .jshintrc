@@ -11,6 +11,9 @@
   "undef": true,
   "unused": true,
   "globals": {
-    "angular": false
+    "$":false,
+    "jquery":false,
+    "angular":false,
+    "go":false
   }
 }

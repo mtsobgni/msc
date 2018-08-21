@@ -17,8 +17,8 @@ angular.module('mscApp')
 			var results = [];
 			string = string.toLowerCase();
 			angular.forEach(guests, function(guest) {
-				if((guest.name.toString().toLowerCase().indexOf(string)!==-1)
-					|| (guest.firstName.toString().toLowerCase().indexOf(string)!==-1)){
+				if((guest.name.toString().toLowerCase().indexOf(string)!==-1) || 
+					(guest.firstName.toString().toLowerCase().indexOf(string)!==-1)){
 					results.push(guest);
 				}
 			});
@@ -28,9 +28,9 @@ angular.module('mscApp')
 	})
 	.filter('labelTitleFilter', function() {
 		return function(string, list) {
-			var res = "";
+			var res = '';
 			angular.forEach(list, function(item) {
-				if(string!=undefined && string.toString()===item._id.toString()){
+				if(string!==undefined && string.toString()===item._id.toString()){
 					res = item.label;
 				}
 			});

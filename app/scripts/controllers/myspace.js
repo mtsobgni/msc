@@ -10,7 +10,7 @@
 angular.module('mscApp')
   .controller('MyspaceCtrl', function ($rootScope, $scope, serviceAjax, $location, $uibModal) {
     if(!$rootScope.loggedUser) {
-        $location.path("/main");
+        $location.path('/main');
         return;
     }
     $scope.isRoomManager = $rootScope.loggedUser.role === '1'; // if it's a room's owner
@@ -67,7 +67,7 @@ angular.module('mscApp')
             mail.contactSubject = $rootScope.loggedUser.firstName;
             
             serviceAjax.contacts().sendMail(mail).then(function(){
-                console.log("Sending done");
+                console.log('Sending done');
             
                 if(event){
                     var modalInstance = $uibModal.open({
@@ -81,12 +81,12 @@ angular.module('mscApp')
                     });
 
                     modalInstance.result.then(
-                        function (event) { //$uibModalInstance.close
+                        function () { //$uibModalInstance.close
                             console.log($scope.newEvent);
                             $scope.newEvent = {};
                             $scope.newEvent.startDate = new Date();
                         }, 
-                        function (msg) {//$uibModalInstance.dismiss
+                        function () {//$uibModalInstance.dismiss
                         }
                     );
                 }
@@ -122,7 +122,7 @@ angular.module('mscApp')
         if($scope.isRoomManager) {
             return;
         }
-        $location.path("/home").search({"evtId": event._id});
+        $location.path('/home').search({'evtId': event._id});
     };
 
     /*****************/
@@ -147,7 +147,7 @@ angular.module('mscApp')
     };
 
     // Disable weekend selection
-    function disabled(data) {
+    function disabled() {
         // var date = data.date,
         // mode = data.mode;
         // return mode === 'day' && (date.getDay() === 0 || date.getDay() === 6);
@@ -170,7 +170,7 @@ angular.module('mscApp')
 
     $scope.sendMail = function(){
         serviceAjax.contacts().sendMail().then(function(){
-            console.log("Sending done");
+            console.log('Sending done');
         });
     };
 });

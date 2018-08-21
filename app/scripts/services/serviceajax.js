@@ -10,7 +10,7 @@
 angular.module('mscApp')
   .factory('serviceAjax', function ($http, serverURL, serverURLMail) {
     // Service logic
-    var headers = {"Content-Type": "application/x-www-form-urlencoded"};
+    var headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     var url = serverURLMail;
 
     // Public API here
@@ -90,7 +90,7 @@ angular.module('mscApp')
                     return $http.get(url, headers);
                 },
                 all: function (evtId) {
-                    return this.get(!evtId ? null : "?evtId="+evtId);
+                    return this.get(!evtId ? null : '?evtId='+evtId);
                 },
                 create: function (guest) {
                     url = serverURL + 'api/guest';
