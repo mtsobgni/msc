@@ -8,34 +8,30 @@
  * Controller of the mscApp
  */
 angular.module('mscApp')
-  .controller('MyspaceCtrl', function ($rootScope, $scope, serviceAjax, $location, $uibModal) {
-    if(!$rootScope.loggedUser) {
-        $location.path('/main');
-        return;
-    }
-    $scope.isRoomManager = $rootScope.loggedUser.role === '1'; // if it's a room's owner
+  .controller('MyspaceCtrl', function ($scope, USER_ROLES, FLOW_STEPS, ServiceAjax, $location, $uibModal, Session) {
+    $scope.setStep(FLOW_STEPS.myspace);
+    $scope.setCurrentUser();
 
     $scope.events = [];
-    $scope.EVENTSATES = {
+    $scope.EVENTSTATES = {
         ALL: 1,
         INPROGRESS: 2,
         DONE: 3
     };
-    $scope.eventState = $scope.EVENTSATES.ALL;
+    $scope.eventState = $scope.EVENTSTATES.ALL;
     
     $scope.newEvent = {};
     $scope.newEvent.startDate = new Date();
-    serviceAjax.rooms().all().then(function(data) {
+    ServiceAjax.rooms().all().then(function(data) {
         $scope.rooms = data.data;
         $scope.newEvent.where = $scope.rooms[0]._id;
     }, function(data) {
         console.log('Error: ' + data);
     });
 
-
     function fillEventsWithRooms(events) {
         events.forEach(function(event) {
-            serviceAjax.rooms().get(event.where).then(function(data) {
+            ServiceAjax.rooms().get(event.where).then(function(data) {
                 event.where = data.data.name;
                 $scope.events.push(event);
             }, function(data) {
@@ -44,29 +40,29 @@ angular.module('mscApp')
         });
     }
 
-    if($scope.isRoomManager) {
-        serviceAjax.events().getBy($rootScope.loggedUser._id).then(function(data) {
+    if($scope.currentUser.role === USER_ROLES.owner) {
+        ServiceAjax.events().getBy($scope.currentUser._id).then(function(data) {
             var events = data.data;
             fillEventsWithRooms(events);
         });
     } else {
-        serviceAjax.events().getByOnwer($rootScope.loggedUser._id).then(function(data) {
+        ServiceAjax.events().getByOnwer($scope.currentUser._id).then(function(data) {
             var events = data.data;
             fillEventsWithRooms(events);
         });
     }
     
     $scope.createEvent = function(event) {
-        event.by = $rootScope.loggedUser._id;
-        serviceAjax.events().create(event).then(function(data) {
+        event.by = $scope.currentUser._id;
+        ServiceAjax.events().create(event).then(function(data) {
             event = data.data;
             
             var mail = {};
             mail.contactEmail = event.bookerEmail;
             mail.contactMsg = event._id;
-            mail.contactSubject = $rootScope.loggedUser.firstName;
+            mail.contactSubject = $scope.currentUser.firstName;
             
-            serviceAjax.contacts().sendMail(mail).then(function(){
+            ServiceAjax.contacts().sendMail(mail).then(function(){
                 console.log('Sending done');
             
                 if(event){
@@ -92,7 +88,7 @@ angular.module('mscApp')
                 }
             });
             
-            serviceAjax.rooms().get(event.where).then(function(data) {
+            ServiceAjax.rooms().get(event.where).then(function(data) {
                 event.where = data.data.name;
                 $scope.events.push(event);
             }, function(data) {
@@ -104,11 +100,11 @@ angular.module('mscApp')
     };
 
     $scope.addEvent = function(event) {
-        event.owner = $rootScope.loggedUser._id;
-        serviceAjax.events().set(event).then(function(data) {
+        event.owner = $scope.currentUser._id;
+        ServiceAjax.events().set(event).then(function(data) {
             event = data.data;
             if($scope.events.findIndex(function(evt) { return evt._id === event._id; }) === -1) {
-                serviceAjax.rooms().get(event.where).then(function(data) {
+                ServiceAjax.rooms().get(event.where).then(function(data) {
                     event.where = data.data.name;
                     $scope.events.push(event);
                 }, function(data) {
@@ -119,10 +115,11 @@ angular.module('mscApp')
     };
 
     $scope.goToRoom = function(event) {
-        if($scope.isRoomManager) {
+        /*if($scope.isRoomManager) {
             return;
-        }
-        $location.path('/home').search({'evtId': event._id});
+        }*/
+        Session.setEvent(event._id);
+        $location.path('/home');
     };
 
     /*****************/
@@ -169,7 +166,7 @@ angular.module('mscApp')
     /*****************/
 
     $scope.sendMail = function(){
-        serviceAjax.contacts().sendMail().then(function(){
+        ServiceAjax.contacts().sendMail().then(function(){
             console.log('Sending done');
         });
     };

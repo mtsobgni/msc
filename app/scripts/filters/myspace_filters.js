@@ -9,7 +9,7 @@
  */
 angular.module('mscApp')
 	.filter('searchedEvtFilter', function() {
-		return function(events, string, eventState, EVENTSATES) {
+		return function(events, string, eventState, EVENTSTATES) {
 			if(typeof events === 'undefined' || !events) {
 				return [];
 			}
@@ -17,8 +17,8 @@ angular.module('mscApp')
             var now = new Date().toLocaleDateString();
             events = events.filter(function(event) {
             	var eventdate = new Date(event.startDate).toLocaleDateString();
-            	return eventState===EVENTSATES.ALL ? true : 
-            		eventState===EVENTSATES.DONE ? eventdate < now : eventdate >= now;
+            	return eventState===EVENTSTATES.ALL ? true : 
+            		eventState===EVENTSTATES.DONE ? eventdate < now : eventdate >= now;
             });
 
             if(!string) {

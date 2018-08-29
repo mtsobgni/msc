@@ -25,12 +25,6 @@
     </div>
   </div>
 
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist" id="myTabs">
-    <li role="presentation"><a href="#guests">Invités</a></li>
-    <li role="presentation" class="active"><a href="#map">Orga Salle</a></li>
-  </ul>
-
   <!-- Tab panes -->
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane" id="guests">
@@ -82,11 +76,18 @@
         <span class="caret"></span></button>
         <ul class="dropdown-menu">
           <li class="dropdown-submenu">
+            <a tabindex="-1" href="#">Rectangle<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a tabindex="-1" href="#" ng-click="addTable('R3')">3 places</a></li>
+              <li><a tabindex="-1" ng-click="addTable('R4')">4 places</a></li>
+              <li><a tabindex="-1" ng-click="addTable('R6')">6 places</a></li>
+              <li><a tabindex="-1" ng-click="addTable('R8')">8 places</a></li>
+            </ul>
+          </li>
+          <li class="dropdown-submenu">
             <a tabindex="-1" href="#">Ronde<span class="caret"></span></a>
             <ul class="dropdown-menu">
-              <li><a tabindex="-1" href="#" ng-click="addTable()">4</a></li>
-              <li><a tabindex="-1" ng-click="addTable()">5</a></li>
-              <li><a tabindex="-1" ng-click="addTable()">6</a></li>
+              <li><a tabindex="-1" href="#" ng-click="addTable('C8')">8 places</a></li>
             </ul>
           </li>
         </ul>

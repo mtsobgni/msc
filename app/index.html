@@ -23,7 +23,7 @@
 
     <script src="scripts/controllers/go.js"></script>
   </head>
-  <body ng-app="mscApp">
+  <body ng-app="mscApp" ng-controller="ApplicationController">
     <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -33,30 +33,40 @@
       <div class="navbar navbar-default" role="navigation">
         <div class="container">
           <div class="navbar-header">
-            <a class="navbar-brand" href="#/">SeatingChart</a>
+            <span style="font-size: 20px; text-align: center;">SeatingChart</span>
           </div>
 
-          <div class="collapse navbar-collapse" id="header-navbar-menu">
-            <ul class="nav navbar-nav">
-              <li><a href="#!/howItWork">Comment ça marche?</a></li>
-              <li><a ng-href="#!/ourServices">Nos services</a></li>
-              <li><a ng-href="#!/contactUs">Nous contacter</a></li>
-              <li><a ng-href="#!/aboutUs">A propos de nous</a></li>
-            </ul>
-            <a class="btn btn-large btn-primary pull-right" style="margin-top: 5px" type="submit" ng-show="!loggedUser" ng-click="isSubscription = !isSubscription">Inscrivez-vous</a>
+          <div ng-if="step===flowSteps.login">
+            <div class="collapse navbar-collapse pull-right" id="header-navbar-menu">
+              <ul class="nav navbar-nav">
+                <li><a ng-href="#!/howItWork">Comment ça marche?</a></li>
+                <li><a ng-href="#!/ourServices">Nos services</a></li>
+                <li><a ng-href="#!/contactUs">Nous contacter</a></li>
+                <li><a ng-href="#!/aboutUs">A propos de nous</a></li>
+                <li><a ng-href="#!/login" style="background-color: #337ab7; color: white;">CONNEXION</a></li>
+                <li><a ng-href="#!/subscribe" style="background-color: #dd5347; color: white;">CRÉER UN COMPTE</a></li>
+              </ul>
+            </div>
+          </div>
 
-            <ul class="nav navbar-nav collapse navbar-collapse">
-              <li class="dropdown" >
-                <a class="dropdown-toggle " data-toggle="dropdown" ng-show="!!loggedUser" >Bienvenue {{loggedUser.firstName}} <b class="caret"></b>
-                </a>
-                <ul class="dropdown-menu " role="menu">
-                  <li><a ng-href="#!/profil">Mon profil</a></li>
-                  <li><a style="margin-top: 5px" type="submit"  ng-click="logout()">Déconnexion</a></li>
-                  <li class="divider">exemple</li> 
-                </ul>
-              </li>
-            </ul>
-
+          <div ng-if="step!==flowSteps.login">
+            <div class="collapse navbar-collapse" id="header-navbar-menu">
+              <ul ng-show="step===flowSteps.main" class="nav navbar-nav role="tablist" id="myTabs"" style="margin-left: 30%;">
+                <li role="presentation"><a href="#guests">Invités</a></li>
+                <li role="presentation" class="active"><a href="#map">Map</a></li>
+              </ul>
+              <ul class="nav navbar-nav collapse navbar-collapse pull-right">
+                <li class="dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown">Bienvenue {{currentUser.firstName}} <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu" role="menu">
+                    <li><a ng-href="#!/profil">Mon profil</a></li>
+                    <li><a style="margin-top: 5px" type="submit" ng-click="logout()">Déconnexion</a></li>
+                    <li class="divider">exemple</li> 
+                  </ul>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -66,12 +76,13 @@
     <div ng-view=""></div>
     </div>
 
+    <div login-dialog ng-if="step!==flowSteps.login"></div>
+
     <div class="footer">
       <div class="container">
         <p><span class="glyphicon glyphicon-heart"></span> My seating chart</p>
       </div>
     </div>
-
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <!-- <script>
@@ -101,20 +112,27 @@
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
+
+    <script src="scripts/services/sessionService.js"></script>
+    <script src="scripts/services/authService.js"></script>
+    <script src="scripts/services/ServiceAjax.js"></script>
+
+    <script src="scripts/filters/myspace_filters.js"></script>
+    <script src="scripts/filters/home_filters.js"></script>
+    
+    <script src="scripts/directives/login.js"></script>
+    <script src="scripts/directives/godiagram.js"></script>
+
+    <script src="scripts/controllers/login.js"></script>
     <script src="scripts/controllers/infoPopup.js"></script>
     <script src="scripts/controllers/newGuestPopup.js"></script>
-    <script src="scripts/controllers/main.js"></script>
     <script src="scripts/controllers/aboutus.js"></script>
     <script src="scripts/controllers/contactus.js"></script>
     <script src="scripts/controllers/ourservices.js"></script>
     <script src="scripts/controllers/howitwork.js"></script>
     <script src="scripts/controllers/home.js"></script>
-    <script src="scripts/directives/godiagram.js"></script>
     <script src="scripts/controllers/myspace.js"></script>
      <script src="scripts/controllers/profil.js"></script>
-    <script src="scripts/services/serviceajax.js"></script>
-    <script src="scripts/filters/myspace_filters.js"></script>
-    <script src="scripts/filters/home_filters.js"></script>
     <!-- endbuild -->
 
     <script>

@@ -8,16 +8,18 @@
  * Controller of the mscApp
  */
 angular.module('mscApp')
-  .controller('HomeCtrl', function ($rootScope, $scope, serviceAjax, $location, $routeParams, $uibModal) {
-    if(!$rootScope.loggedUser) {
-        // $location.path('/main');
-    }
+  .controller('HomeCtrl', function ($rootScope, $scope, FLOW_STEPS, ServiceAjax, $location, Session, $routeParams, $uibModal) {
+  	$scope.setStep(FLOW_STEPS.main);
+    $scope.setCurrentUser();
 
-    var _evtId = $routeParams.evtId;
+    // var _evtId = $routeParams.evtId;
+    var _evtId = Session.event();
     if(!_evtId) {
-    	$location.path('/space');
+    	$location.path('/myspace');
         return;
     }
+	
+    $scope.isPlanView = true;
 
     $scope.titles = [
     	{'_id':1, 'label':'Monsieur'},
@@ -25,16 +27,15 @@ angular.module('mscApp')
     ];
 
     $scope.tables = [
-		{'key':1,'category':'TableR3','name':'Head 1','guests':{},'loc':'-91.50 -6.00'},
-		{'key':2,'category':'TableR3','name':'Head 2','guests':{},'loc':'102.50 -15'},
+		{'key':1,'category':'TableR4','name':'Head 1','guests':{},'loc':'-91.50 -6.00'},
+		/*{'key':2,'category':'TableR3','name':'Head 2','guests':{},'loc':'102.50 -15'},
 		{'key':3,'category':'TableR8','name':'3','guests':{},'loc':'-84.5 222.50'},
-		{'key':4,'category':'TableC8','name':'4','guests':{},'loc':'198.49 146.5'}
+		{'key':4,'category':'TableC8','name':'4','guests':{},'loc':'198.49 146.5'}*/
 	];
-    $scope.isPlanView = true;
 
     $scope.guests = [];
     var guestsOrigin = angular.copy($scope.guests);
-    serviceAjax.guests().all(_evtId).then(function(data) {
+    ServiceAjax.guests().all(_evtId).then(function(data) {
         var guests = data.data;
         guests.forEach(function(guest) {
         	guest.key = guest.firstName + ' ' + guest.name;
@@ -70,18 +71,16 @@ angular.module('mscApp')
 			templateUrl: '../../views/newGuestPopup.html',
 			controller: 'newGuestPopupCtrl',
 			resolve: {
-				guestList: function () {
-				  return $scope.guests;
-				},
-				eventId: function () {
-					return _evtId;
+				parameters: function () {
+					return {titles: $scope.titles, guestList: $scope.guests, eventId: _evtId};
 				}
 			}
 		});
 
 		modalInstance.result.then(
-			function (msg) { //$uibModalInstance.close
-			    console.log(msg);
+			function (newGuest) { //$uibModalInstance.close
+			    console.log(newGuest);
+			    $scope.guestList.addNodeData(newGuest);
 			}, 
 			function (msg) {//$uibModalInstance.dismiss
 				console.log(msg);
@@ -90,7 +89,7 @@ angular.module('mscApp')
 	};
 
     $scope.deleteGuest = function(guest) {
-    	serviceAjax.guests().delete(guest._id).then(function() {
+    	ServiceAjax.guests().delete(guest._id).then(function() {
             $scope.guests.splice($scope.guests.indexOf(guest),1);
         }, function(data) {
             console.log('Error: ' + data);
@@ -107,22 +106,14 @@ angular.module('mscApp')
     	$scope.isSelectedAllGuests = isSelectedAllGuests;
     };
 
-	// Watch guests for changes
-	$scope.$watch('guests|filter:{selected:true}', function (nv) {
-		if(nv!==undefined) {
-			$scope.selectedGuests = nv.map(function (guest) {
-				return guest._id;
-			});
-		}
-	}, true);
-
 	/* ******* table ******** */
 
     var locX = 364.5, locY = 223.5;
 	var tableStd = {'key':-1, 'category':'TableC8', 'name':'4', 'guests':{}, 'loc':locX+' '+locY};
-	$scope.addTable = function() {
+	$scope.addTable = function(tableId) {
     	var previousTables = angular.copy($scope.tables);
 		tableStd.key = $scope.tables.length+1;
+		tableStd.category = 'Table'+tableId;
 		tableStd.name = tableStd.key + '';
 		tableStd.loc = (locX + 2*tableStd.key) + ' ' + (locY + 2*tableStd.key);
 		// tableStd.loc = previousTables[previousTables.length-1].loc;
@@ -157,27 +148,6 @@ angular.module('mscApp')
     	setTimeout($scope.triggerPosition, 200);
     };
 
-	$scope.mySearchInFiltering = function() {
-		// Declare variables 
-		var input, filter, table, tr, td, i;
-		input = document.getElementById('myGuestSearchInput');
-		filter = input.value.toUpperCase();
-		table = document.getElementById('guestTable');
-		tr = table.getElementsByTagName('tr');
-
-		// Loop through all table rows, and hide those who don't match the search query
-		for (i = 0; i < tr.length; i++) {
-			td = tr[i].getElementsByTagName('td')[1];
-			if (td) {
-				if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
-					tr[i].style.display = '';
-				} else {
-					tr[i].style.display = 'none';
-				}
-			} 
-		}
-	};
-
 	$scope.isFullScreen = false;
 	$scope.goFullScreen = function(elt) {
 		$scope.isFullScreen = true;
@@ -198,6 +168,21 @@ angular.module('mscApp')
 			$scope.guestList = new go.GraphLinksModel(newGuests);
 		}
 	});
+	
+	/*$scope.$watch(function($scope) {
+		return $scope.guests.
+			map(function(guest) {
+				return guest.selected;
+			});
+	}, function(newValue) {
+		if(newValue!==undefined) {
+			$scope.selectedGuests = newValue.map(function (guest) {
+				if(guest.selected) {
+					return guest._id;
+				}
+			});
+		}
+	}, true);*/
 
 	$scope.$watch('tables', function(newModel, oldModel) {
 		if (newModel !== oldModel) {

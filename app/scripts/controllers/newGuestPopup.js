@@ -1,25 +1,26 @@
 'use strict';
 
 angular.module('mscApp')
-.controller('newGuestPopupCtrl', function ($scope, serviceAjax, $uibModalInstance, guestList, eventId) {
+.controller('newGuestPopupCtrl', function ($scope, serviceAjax, $uibModalInstance, parameters) {
 
 	$scope.newGuest = {title: 1};
+    $scope.titles = parameters.titles;
 
 	$scope.resetGuestForm = function() {
 		$scope.newGuest = {title: 1};
 	};
 
     $scope.addGuest = function (newGuest) {
-    	newGuest.evtId = eventId;
+    	newGuest.evtId = parameters.eventId;
         serviceAjax.guests().create(newGuest).then(function(data) {
             newGuest = data.data;
             newGuest.key = newGuest.firstName + ' ' + newGuest.name;
             newGuest.selected = false;
-            guestList.push(newGuest);
+            // parameters.guestList.push(newGuest);
 
             $scope.resetGuestForm();
 
-        	$uibModalInstance.close('ok');
+        	$uibModalInstance.close(newGuest);
         }, function(data) {
             console.log('Error: ' + data);
         });

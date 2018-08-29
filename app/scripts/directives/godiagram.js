@@ -63,6 +63,21 @@ angular.module('mscApp')
 				}
 			}
 
+			// update the Angular model when the Diagram.selection changes
+			function updateSelection(e) {
+				diagram.model.selectedNodeData = null;
+				var it = diagram.selection.iterator;
+				while (it.next()) {
+					var selnode = it.value;
+					// ignore a selected link or a deleted node
+					if (selnode instanceof go.Node && selnode.data !== null) {
+						diagram.model.selectedNodeData = selnode.data;
+						break;
+					}
+				}
+				scope.$apply();
+			}
+
 			var diagram =  // create a Diagram for the given HTML DIV element
 				$(go.Diagram, element[0],
 					{
@@ -134,6 +149,55 @@ angular.module('mscApp')
 			  ];
 			}
 			// various kinds of tables:
+			diagram.nodeTemplateMap.add("TableR3",  // rectangular with 3 seats in a line
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Rectangle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(160, 60), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.2 0", "0.5 1"),
+					new Seat(2, "0.5 0", "0.5 1"),
+					new Seat(3, "0.8 0", "0.5 1")
+				));
+			diagram.nodeTemplateMap.add("TableR4",  // rectangular with 3 seats in a line
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Rectangle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(80, 80), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.5 0", "0.5 1"),
+					new Seat(2, "1 0.5", "0 0.5"),
+					new Seat(3, "0.5 1", "0.5 0"),
+					new Seat(4, "0 0.5", "1 0.5")
+				));
+			diagram.nodeTemplateMap.add("TableR6",  // rectangular with 3 seats in a line
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Rectangle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(160, 60), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.2 0", "0.5 1"),
+					new Seat(2, "0.5 0", "0.5 1"),
+					new Seat(3, "0.8 0", "0.5 1"),
+					new Seat(4, "0.2 1", "0.5 0"),
+					new Seat(5, "0.5 1", "0.5 0"),
+					new Seat(6, "0.8 1", "0.5 0")
+				));
 			diagram.nodeTemplateMap.add("TableR8",  // rectangular with 8 seats
 				$(go.Node, "Spot", tableStyle(),
 				    $(go.Panel, "Spot",
@@ -154,21 +218,7 @@ angular.module('mscApp')
 				    new Seat(7, "0.2 1", "0.5 0"),
 				    new Seat(8, "0 0.5", "1 0.5")
 				));
-			diagram.nodeTemplateMap.add("TableR3",  // rectangular with 3 seats in a line
-				$(go.Node, "Spot", tableStyle(),
-					$(go.Panel, "Spot",
-						$(go.Shape, "Rectangle",
-							{ name: "TABLESHAPE", desiredSize: new go.Size(160, 60), fill: "burlywood", stroke: null },
-							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
-							new go.Binding("fill")),
-						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
-							new go.Binding("text", "name").makeTwoWay(),
-							new go.Binding("angle", "angle", function(n) { return -n; }))
-					),
-					new Seat(1, "0.2 0", "0.5 1"),
-					new Seat(2, "0.5 0", "0.5 1"),
-					new Seat(3, "0.8 0", "0.5 1")
-				));
+
 			diagram.nodeTemplateMap.add("TableC8",  // circular with 8 seats
 				$(go.Node, "Spot", tableStyle(),
 					$(go.Panel, "Spot",
@@ -268,9 +318,13 @@ angular.module('mscApp')
 					var seat = sit.value;
 					if (seat.name) {
 						var num = parseFloat(seat.name);
-						if (isNaN(num)) continue;
+						if (isNaN(num)) {
+							continue;
+						}
 						var seatshape = seat.findObject("SEATSHAPE");
-						if (!seatshape) continue;
+						if (!seatshape) {
+							continue;
+						}
 						if (show) {
 						  	if (guests[seat.name]) {
 						      	seatshape.stroke = "red";
@@ -288,7 +342,9 @@ angular.module('mscApp')
 			function assignPeopleToSeats(node, coll, pt) {
 				if (isPerson(node)) {  // refer to the person's table instead
 				  	node = node.diagram.findNodeForKey(node.data.table);
-				 	if (node === null) return;
+				 	if (node === null) {
+				 		return;
+				 	}
 				}
 				if (coll.any(isTable)) {
 					// if dragging a Table, don't allow it to be dropped onto another table
@@ -305,10 +361,16 @@ angular.module('mscApp')
 			function assignSeat(node, guest, pt) {
 				if (isPerson(node)) {  // refer to the person's table instead
 					node = node.diagram.findNodeForKey(node.data.table);
-					if (node === null) return;
+					if (node === null) {
+						return;
+					}
 				}
-				if (guest instanceof go.GraphObject) throw Error("A guest object must not be a GraphObject: " + guest.toString());
-				if (!(pt instanceof go.Point)) pt = node.location;
+				if (guest instanceof go.GraphObject) {
+					throw Error("A guest object must not be a GraphObject: " + guest.toString());
+				}
+				if (!(pt instanceof go.Point)) {
+					pt = node.location;
+				}
 				// in case the guest used to be assigned to a different seat, perhaps at a different table
 				unassignSeat(guest);
 				var model = node.diagram.model;
@@ -338,14 +400,18 @@ angular.module('mscApp')
 			// Declare that the guest represented by the data is no longer assigned to a seat at a table.
 			// If the guest had been at a table, the guest is removed from the table's list of guests.
 			function unassignSeat(guest) {
-				if (guest instanceof go.GraphObject) throw Error("A guest object must not be a GraphObject: " + guest.toString());
+				if (guest instanceof go.GraphObject) {
+					throw Error("A guest object must not be a GraphObject: " + guest.toString());
+				}
 				var model = diagram.model;
 				// remove from any table that the guest is assigned to
 				if (guest.table) {
 					var table = model.findNodeDataForKey(guest.table);
 					if (table) {
 						var guests = table.guests;
-						if (guests) model.setDataProperty(guests, guest.seat.toString(), undefined);
+						if (guests) {
+							model.setDataProperty(guests, guest.seat.toString(), undefined);
+						}
 					}
 				}
 				model.setDataProperty(guest, "table", undefined);
@@ -356,7 +422,9 @@ angular.module('mscApp')
 			function findClosestUnoccupiedSeat(node, pt) {
 				if (isPerson(node)) {  // refer to the person's table instead
 					node = node.diagram.findNodeForKey(node.data.table);
-					if (node === null) return;
+					if (node === null) {
+						return;
+					}
 				}
 				var guests = node.data.guests;
 				var closestseatname = null;
@@ -366,8 +434,12 @@ angular.module('mscApp')
 					var seat = sit.value;
 					if (seat.name) {
 						var num = parseFloat(seat.name);
-						if (isNaN(num)) continue;  // not really a "seat"
-						if (guests[seat.name]) continue;  // already assigned
+						if (isNaN(num)) {
+							continue;  // not really a "seat"
+						}
+						if (guests[seat.name]) {
+							continue;  // already assigned
+						}
 						var seatloc = seat.getDocumentPoint(go.Spot.Center);
 						var seatdist = seatloc.distanceSquaredPoint(pt);
 						if (seatdist < closestseatdist) {
@@ -383,7 +455,9 @@ angular.module('mscApp')
 			function positionPeopleAtSeats(node) {
 				if (isPerson(node)) {  // refer to the person's table instead
 					node = node.diagram.findNodeForKey(node.data.table);
-					if (node === null) return;
+					if (node === null) {
+						return;
+					}
 				}
 				var guests = node.data.guests;
 				var model = node.diagram.model;
@@ -395,8 +469,12 @@ angular.module('mscApp')
 			}
 			// Position a single guest Node to be at the location of the seat to which they are assigned.
 			function positionPersonAtSeat(guest, diagram) {
-				if (guest instanceof go.GraphObject) throw Error("A guest object must not be a GraphObject: " + guest.toString());
-				if (!guest || !guest.table || !guest.seat) return;
+				if (guest instanceof go.GraphObject) {
+					throw Error("A guest object must not be a GraphObject: " + guest.toString());
+				}
+				if (!guest || !guest.table || !guest.seat) {
+					return;
+				}
 				// var diagram = diagram;
 				var table = diagram.findPartForKey(guest.table);
 				var person = diagram.findPartForData(guest);
@@ -407,20 +485,6 @@ angular.module('mscApp')
 				}
 			}
 
-			// update the Angular model when the Diagram.selection changes
-			function updateSelection(e) {
-				diagram.model.selectedNodeData = null;
-				var it = diagram.selection.iterator;
-				while (it.next()) {
-					var selnode = it.value;
-					// ignore a selected link or a deleted node
-					if (selnode instanceof go.Node && selnode.data !== null) {
-						diagram.model.selectedNodeData = selnode.data;
-						break;
-					}
-				}
-				scope.$apply();
-			}
 			// notice when the value of "model" changes: update the Diagram.model
 			scope.$watch("model", function(newmodel) {
 				var oldmodel = diagram.model;
@@ -455,14 +519,18 @@ angular.module('mscApp')
 				}
 			});
 			scope.$watch("model.selectedNodeData.name", function(newname) {
-				if (!diagram.model.selectedNodeData) return;
+				if (!diagram.model.selectedNodeData) {
+					return;
+				}
 				// disable recursive updates
 				diagram.removeModelChangedListener(updateAngular);
 				// change the name
 				diagram.startTransaction("change name");
 				// the data property has already been modified, so setDataProperty would have no effect
 				var node = diagram.findNodeForData(diagram.model.selectedNodeData);
-				if (node !== null) node.updateTargetBindings("name");
+				if (node !== null) {
+					node.updateTargetBindings("name");
+				}
 				diagram.commitTransaction("change name");
 				// re-enable normal updates
 				diagram.addModelChangedListener(updateAngular);
