@@ -47,19 +47,26 @@ angular.module('mscApp')
         console.log('Error: ' + data);
     });
 
-	$('#myTabs a').click(function (e) {
-		e.preventDefault();
-		$(this).tab('show');
-		$scope.isPlanView = $('.nav-tabs .active').text() === 'Orga Salle';
-		$scope.$apply();
-	});
+    function setMap() {
+		$('#myTabs a').click(function (e) {
+			e.preventDefault();
+			$(this).tab('show');
+			$scope.isPlanView = $('.nav-tabs .active').text() === 'Orga Salle';
+			$scope.$apply();
 
-	// trigger the selection on the dropdow "Add table"
-	$('.dropdown-submenu a').on('click', function(e) {
-	    $(this).next('ul').toggle();
-	    e.stopPropagation();
-	    e.preventDefault();
-	});
+			// currentTab = e.target.hash;
+		});
+
+	    $('a[href="#map"]').tab('show');
+
+		// trigger the selection on the dropdow "Add table"
+		$('.dropdown-submenu a').on('click', function(e) {
+		    $(this).next('ul').toggle();
+		    e.stopPropagation();
+		    e.preventDefault();
+		});
+	}
+	setMap();
 
 	/* ******* methods ******** */
 
