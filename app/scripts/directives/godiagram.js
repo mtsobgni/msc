@@ -239,6 +239,144 @@ angular.module('mscApp')
 					new Seat(7, "0 0.5", "1 0.5"),
 					new Seat(8, "0.15 0.15", "0.85 0.85")
 				));
+				diagram.nodeTemplateMap.add("TableR4",  // rectangular with 4 seats in a line
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Rectangle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(120, 60), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.25 0", "0.45 1"),
+					new Seat(2, "0.65 0", "0.35 1"),
+					new Seat(3, "0.25 1", "0.45 0"),
+					new Seat(4, "0.65 1", "0.35 0")
+				));
+			diagram.nodeTemplateMap.add("TableR42",  // rectangular with 4 seats in a line
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Rectangle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(80, 80), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.5 0", "0.5 1"),
+					new Seat(2, "1 0.5", "0 0.5"),
+					new Seat(3, "0.5 1", "0.5 0"),
+					new Seat(4, "0 0.5", "1 0.5")
+				));
+			diagram.nodeTemplateMap.add("TableR6",  // rectangular with 6 seats in a line
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Rectangle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(125, 60), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.25 0", "0.45 1"),
+					new Seat(2, "0.65 0", "0.35 1"),
+					new Seat(3, "0.25 1", "0.45 0"),
+					new Seat(4, "0.65 1", "0.35 0"),
+					new Seat(5, "0 0.5", "1 0.5"),
+					new Seat(6, "1 0.5", "0 0.5")
+				));
+			diagram.nodeTemplateMap.add("TableR62",  // rectangular with 6 seats in a line
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Rectangle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(160, 60), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.2 0", "0.5 1"),
+					new Seat(2, "0.5 0", "0.5 1"),
+					new Seat(3, "0.8 0", "0.5 1"),
+					new Seat(4, "0.2 1", "0.5 0"),
+					new Seat(5, "0.5 1", "0.5 0"),
+					new Seat(6, "0.8 1", "0.5 0")
+				));
+			diagram.nodeTemplateMap.add("TableR10",  // rectangular with 8 seats
+				$(go.Node, "Spot", tableStyle(),
+				    $(go.Panel, "Spot",
+				    	$(go.Shape, "Rectangle",
+				    		{ name: "TABLESHAPE", desiredSize: new go.Size(195, 80), fill: "burlywood", stroke: null },
+				    		new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+				    		new go.Binding("fill")),
+				      	$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+				      		new go.Binding("text", "name").makeTwoWay(),
+				      		new go.Binding("angle", "angle", function(n) { return -n; }))
+				    ),
+				    new Seat(1, "0.17 0", "0.53 1"),
+				    new Seat(2, "0.42 0", "0.58 1"),
+				    new Seat(3, "0.62 0", "0.38 1"),
+				    new Seat(4, "0.82 0", "0.18 1"),
+				    new Seat(5, "1 0.5", "0 0.5"),
+				    new Seat(6, "0.82 1", "0.18 0"),
+				    new Seat(7, "0.62 1", "0.38 0"),
+				    new Seat(8, "0.42 1", "0.58 0"),
+				    new Seat(9, "0 0.5", "1 0.5"),
+				    new Seat(10, "0.17 1", "0.53 0"),
+				    //new Seat(10, "0 0.5", "1 0.5")
+				));
+				diagram.nodeTemplateMap.add("TableC10",  // circular with 10 seats
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Circle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(150, 150), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.50 0", "0.5 1"),
+					new Seat(2, "0.80 0.10", "0.20 0.90"),
+					new Seat(3, "0.97 0.35", "0.03 0.65"),
+					new Seat(4, "0.97 0.65", "0.03 0.35"),
+					new Seat(5, "0.80 0.90", "0.20 0.10"),
+					new Seat(6, "0.50 1", "0.5 0"),
+					new Seat(7, "0.20 0.90", "0.80 0.10"),
+					new Seat(8, "0.03 0.65", "0.97 0.35"),
+					new Seat(9, "0.03 0.35", "0.97 0.65"),
+					new Seat(10, "0.20 0.10", "0.80 0.90")
+				));
+			diagram.nodeTemplateMap.add("TableC12",  // circular with 12 seats
+				$(go.Node, "Spot", tableStyle(),
+					$(go.Panel, "Spot",
+						$(go.Shape, "Circle",
+							{ name: "TABLESHAPE", desiredSize: new go.Size(170, 170), fill: "burlywood", stroke: null },
+							new go.Binding("desiredSize", "size", go.Size.parse).makeTwoWay(go.Size.stringify),
+							new go.Binding("fill")),
+						$(go.TextBlock, { editable: true, font: "bold 11pt Verdana, sans-serif" },
+							new go.Binding("text", "name").makeTwoWay(),
+							new go.Binding("angle", "angle", function(n) { return -n; }))
+					),
+					new Seat(1, "0.50 0", "0.5 1"),
+					new Seat(2, "0.77 0.08", "0.23 0.92"),
+					new Seat(3, "0.94 0.26", "0.06 0.74"),
+					new Seat(4, "1 0.5", "0 0.5"),
+					new Seat(5, "0.95 0.73", "0.05 0.27"),
+					new Seat(6, "0.78 0.92", "0.22 0.08"),
+					new Seat(7, "0.50 1", "0.50 0"),
+					new Seat(8, "0.22 0.92", "0.78 0.08"),
+					new Seat(9, "0.05 0.73", "0.95 0.27"),
+					new Seat(10, "0 0.5", "1 0.5"),
+					new Seat(11, "0.06 0.26", "0.94 0.74"),
+					//new Seat(11, "0.03 0.35", "0.97 0.65"),
+					new Seat(12, "0.23 0.08", "0.77 0.92")
+				));
 			// what to do when a drag-drop occurs in the Diagram's background
 			diagram.mouseDrop = function(e) {
 				// when the selection is dropped in the diagram's background,
