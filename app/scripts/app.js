@@ -27,7 +27,7 @@ angular
     owner: '1',
     planner: '2'
   })
-  .constant('SERVER_URL', 'http://mscbd.myseatingchart.xyz/')
+  .constant('SERVER_URL', 'http://localhost:3000/')
   .constant ('FLOW_STEPS', {
     login: '0',
     myspace: '1',
@@ -94,7 +94,7 @@ angular
       .otherwise({
         redirectTo: '/howItWork'
       });
-
+//dgdg
     $httpProvider.interceptors.push([
       '$injector',
       function ($injector) {
